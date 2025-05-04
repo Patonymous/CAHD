@@ -1,8 +1,12 @@
+# Developer settings
+
+build.env
+
 # Build directory
 
 build/
 
-# IDE user settings
+# Developer IDE settings
 
 .vscode/
 
@@ -78,7 +82,6 @@ CMakeLists.txt.user*
 
 # Binaries
 # --------
-*.dll
 *.exe
 
 # Directories with generated files
