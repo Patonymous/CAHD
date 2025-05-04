@@ -1,6 +1,9 @@
 MIT License
 
-Copyright (c) 2025 Patryk Pochmara
+Copyright (c) 2025 Filip Łojek & Patryk Pochmara
+
+Excluding code taken from https://github.com/gkv311/occt-samples-qopenglwidget
+(files are marked with a comment on top), which is under Open CASCADE Technology License.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
