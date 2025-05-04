@@ -39,6 +39,14 @@ target_link_libraries(CAHD
         Qt::OpenGLWidgets
         # OpenCASCADE
         TKV3d
+        TKBRep
+        TKOpenGl
+        TKG3d
+        TKGeomBase
+        TKMath
+        TKGeomAlgo
+        TKTopAlgo   
+        TKPrim     
 )
 
 configure_file(
