@@ -9,6 +9,7 @@
 #include <QOpenGLWidget>
 
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_Shape.hxx>
 #include <AIS_ViewController.hxx>
 #include <AIS_ViewCube.hxx>
 #include <V3d_View.hxx>
@@ -46,6 +47,13 @@ public:
         const Handle(V3d_View) & theNewView
     ) override;
 
+public slots:
+    void loadModelFromFile(const std::string &path);
+
+signals:
+    void loadedModelInfo(int shellCount, int faceCount);
+    void modelLoadingMessage(const QString &message);
+
 protected:
     void initializeGL() override;
     void resizeGL(int width, int height) override;
@@ -77,6 +85,7 @@ private:
     Handle(V3d_View)               m_focusView;
     Handle(AIS_InteractiveContext) m_context;
     Handle(AIS_ViewCube)           m_viewCube;
+    Handle(AIS_Shape)              m_shape;
     // clang-format on
 
     QString            m_glInfo;
