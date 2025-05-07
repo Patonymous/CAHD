@@ -36,7 +36,7 @@
   <customwidget>
    <class>OcctWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header>../occtwidget/occtwidget.h</header>
+   <header>occtwidget/occtwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

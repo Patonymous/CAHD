@@ -552,7 +552,7 @@ void OcctWidget::mouseMoveEvent(QMouseEvent *theEvent) {
     const Graphic3d_Vec2i aNewPos(
         theEvent->position().x(), theEvent->position().y()
     );
-    qDebug() << theEvent->position();
+    // qDebug() << theEvent->position();
     if (!m_view.IsNull()
         && UpdateMousePosition(
             aNewPos, qtMouseButtons2VKeys(theEvent->buttons()),

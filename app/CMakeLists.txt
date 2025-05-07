@@ -1,16 +1,19 @@
+# cspell: disable
+
 cmake_minimum_required(VERSION 3.19)
 project(CAHD LANGUAGES CXX)
 
-# Load environment variables from build.env
-file(STRINGS ${CMAKE_HOME_DIRECTORY}/build.env ENV_FILE)
-foreach(VAR ${ENV_FILE})
-    string(REGEX MATCH "^[^=]*" KEY ${VAR})
-    string(REGEX REPLACE "^[^=]*=" "" VALUE ${VAR})
-    set(ENV{${KEY}} ${VALUE})
-endforeach()
+set(OpenCASCADE_DIR "" CACHE PATH "OpenCascade's cmake directory, default should work on Linux, see 'README.md' 'Build' section for more information.")
+set(THIRD_PARTY_DIR "" CACHE PATH "OpenCascade third party libs directory, default should work on Linux, see 'README.md' 'Build' section for more information.")
 
-set(OpenCASCADE_DIR $ENV{OPEN_CASCADE_DIR}/cmake)
-set(THIRD_PARTY_DIR $ENV{THIRD_PARTY_DIR})
+if (WIN32)
+    if (OpenCASCADE_DIR STREQUAL "")
+        message(WARNING "OpenCASCADE_DIR is not configured, trying nonetheless...")
+    endif (OpenCASCADE_DIR STREQUAL "")
+    if (THIRD_PARTY_DIR STREQUAL "")
+        message(WARNING "THIRD_PARTY_DIR is not configured, trying nonetheless...")
+    endif (THIRD_PARTY_DIR STREQUAL "")
+endif (WIN32)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Gui OpenGL OpenGLWidgets)
 find_package(OpenCASCADE REQUIRED COMPONENTS FoundationClasses ModelingData ModelingAlgorithms Visualization ApplicationFramework DataExchange)
@@ -29,6 +32,10 @@ qt_add_executable(CAHD
     occtwidget/occtwidget.cpp
     occtwidget/occtwidget.h
 )
+
+target_include_directories(CAHD
+    PRIVATE
+        .)
 
 target_link_libraries(CAHD
     PRIVATE
