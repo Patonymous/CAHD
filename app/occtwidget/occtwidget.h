@@ -51,7 +51,7 @@ public slots:
     void loadModelFromFile(const std::string &path);
 
 signals:
-    void loadedModelInfo(int shellCount, int faceCount);
+    void loadedModelInfo(const QList<int> shellsFaceCounts);
     void modelLoadingMessage(const QString &message);
 
 protected:

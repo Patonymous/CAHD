@@ -400,17 +400,17 @@ void OcctWidget::loadModelFromFile(const std::string &path) {
         return;
     }
 
-    int shellCount = 0, totalFaceCount = 0;
+    QList<int> shellsFaceCounts;
     for (TopExp_Explorer explorer(shape, TopAbs_SHELL); explorer.More();
          explorer.Next()) {
+        shellsFaceCounts.append(0);
         for (TopExp_Explorer exp2(explorer.Current(), TopAbs_FACE); exp2.More();
              exp2.Next()) {
-            ++totalFaceCount;
+            ++shellsFaceCounts.last();
             auto face = TopoDS::Face(exp2.Current());
         }
-        ++shellCount;
     }
-    emit loadedModelInfo(shellCount, totalFaceCount);
+    emit loadedModelInfo(shellsFaceCounts);
 
     m_context->Remove(m_shape, false);
     m_shape = new AIS_Shape(shape);

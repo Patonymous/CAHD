@@ -44,9 +44,17 @@ void MainWindow::loadModel() {
     ui->occtWidget->loadModelFromFile(fileNames.first().toStdString());
 }
 
-void MainWindow::updateModelInfo(int shellCount, int faceCount) {
+void MainWindow::updateModelInfo(const QList<int> shellsFaceCounts) {
+    QString faces = "[";
+    for (int i = 0; i < shellsFaceCounts.size(); i++) {
+        faces += QString::number(shellsFaceCounts[i]);
+        if (i < shellsFaceCounts.size() - 1)
+            faces += ", ";
+    }
+    faces += "]";
+
     modelInfoLabel.setText(
-        QString("Shells: %1, Faces: %2").arg(shellCount).arg(faceCount)
+        QString("Shells: %1, Faces: %2").arg(shellsFaceCounts.size()).arg(faces)
     );
 }
 

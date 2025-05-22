@@ -20,7 +20,7 @@ public:
 
 public slots:
     void loadModel();
-    void updateModelInfo(int shellCount, int faceCount);
+    void updateModelInfo(const QList<int> shellsFaceCounts);
     void showMessage(const QString &message);
 
 private:
