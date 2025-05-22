@@ -7,21 +7,29 @@
 
 #include "occtwidget.h"
 
-#include <QApplication>
-#include <QMessageBox>
-#include <QMouseEvent>
+#include <filesystem>
+#include <string>
 
 #include <AIS_Shape.hxx>
 #include <AIS_ViewCube.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <Aspect_NeutralWindow.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepTools.hxx>
 #include <Message.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Window.hxx>
+#include <QApplication>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <STEPControl_Reader.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 Handle(OpenGl_Context) getGlContext(const Handle(V3d_View) & theView) {
     Handle(OpenGl_View) aGlView =
@@ -310,7 +318,8 @@ OcctWidget::OcctWidget(QWidget *parent)
     m_view->ChangeRenderingParams().CollectedStats =
         (Graphic3d_RenderingParams::PerfCounters)(
             Graphic3d_RenderingParams::PerfCounters_FrameRate
-            | Graphic3d_RenderingParams::PerfCounters_Triangles
+            // |
+            // Graphic3d_RenderingParams::PerfCounters_Triangles
         );
 
     // Qt widget setup
@@ -363,6 +372,53 @@ void OcctWidget::dumpGlInfo(bool theIsBasic, bool theToPrint) {
     m_glInfo = QString::fromUtf8(anInfo.ToCString());
 }
 
+void OcctWidget::loadModelFromFile(const std::string &path) {
+    TopoDS_Shape shape;
+    std::string  ext = std::filesystem::path(path).extension().string();
+
+    if (ext == ".step" || ext == ".stp" || ext == ".STEP" || ext == ".STP") {
+        STEPControl_Reader    reader;
+        IFSelect_ReturnStatus status = reader.ReadFile(path.c_str());
+
+        if (status != IFSelect_RetDone) {
+            emit modelLoadingMessage("ERROR: Unable to read STEP file");
+            return;
+        }
+
+        reader.TransferRoots();
+        shape = reader.OneShape();
+    } else if (ext == ".brep" || ext == ".BREP") {
+        BRep_Builder builder;
+        if (!BRepTools::Read(shape, path.c_str(), builder)) {
+            emit modelLoadingMessage("ERROR: Unable to read BREP file");
+            return;
+        }
+    } else {
+        emit modelLoadingMessage(
+            "ERROR: Unsupported file format: " + QString::fromStdString(ext)
+        );
+        return;
+    }
+
+    int shellCount = 0, totalFaceCount = 0;
+    for (TopExp_Explorer explorer(shape, TopAbs_SHELL); explorer.More();
+         explorer.Next()) {
+        for (TopExp_Explorer exp2(explorer.Current(), TopAbs_FACE); exp2.More();
+             exp2.Next()) {
+            ++totalFaceCount;
+            auto face = TopoDS::Face(exp2.Current());
+        }
+        ++shellCount;
+    }
+    emit loadedModelInfo(shellCount, totalFaceCount);
+
+    m_context->Remove(m_shape, false);
+    m_shape = new AIS_Shape(shape);
+    m_shape->SetDisplayMode(AIS_Shaded);
+    m_context->Display(m_shape, true);
+    update();
+}
+
 void OcctWidget::initializeGL() {
     initializeOpenGLFunctions();
     m_logger.initialize();
@@ -411,12 +467,12 @@ void OcctWidget::initializeGL() {
         m_context->Display(m_viewCube, 0, 0, false);
     }
 
-    {
-        // dummy shape for testing
-        TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100.0, 50.0, 90.0).Shape();
-        Handle(AIS_Shape) aShape = new AIS_Shape(aBox);
-        m_context->Display(aShape, AIS_Shaded, 0, false);
-    }
+    // {
+    //     // dummy shape for testing
+    //     TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100.0, 50.0, 90.0).Shape();
+    //     Handle(AIS_Shape) aShape = new AIS_Shape(aBox);
+    //     m_context->Display(aShape, AIS_Shaded, 0, false);
+    // }
 
     printDebugMessages();
 }
@@ -552,7 +608,7 @@ void OcctWidget::mouseMoveEvent(QMouseEvent *theEvent) {
     const Graphic3d_Vec2i aNewPos(
         theEvent->position().x(), theEvent->position().y()
     );
-    qDebug() << theEvent->position();
+    // qDebug() << theEvent->position();
     if (!m_view.IsNull()
         && UpdateMousePosition(
             aNewPos, qtMouseButtons2VKeys(theEvent->buttons()),
