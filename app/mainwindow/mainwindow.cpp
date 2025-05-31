@@ -3,24 +3,33 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), fileDialog(this),
-      modelInfoLabel(this) {
+      statusLabel(this) {
     ui->setupUi(this);
 
     QObject::connect(
-        ui->occtWidget, &OcctWidget::modelLoadingMessage, this,
+        ui->occtWidget, &OcctWidget::statusChanged, this,
+        &MainWindow::updateStatus
+    );
+    QObject::connect(
+        ui->occtWidget, &OcctWidget::messageRaised, this,
         &MainWindow::showMessage
     );
     QObject::connect(
-        ui->occtWidget, &OcctWidget::loadedModelInfo, this,
-        &MainWindow::updateModelInfo
+        ui->occtWidget, &OcctWidget::modelLoaded, this, &MainWindow::addModel
     );
+    QObject::connect(
+        ui->occtWidget, &OcctWidget::modelUnloaded, this,
+        &MainWindow::removeModel
+    );
+
+    ui->treeWidget->sortByColumn(0, Qt::AscendingOrder);
 
     QObject::connect(
         ui->actionOpen, &QAction::triggered, &fileDialog, &QDialog::open
     );
 
-    modelInfoLabel.setText("No model loaded");
-    statusBar()->addWidget(&modelInfoLabel);
+    statusLabel.setText("No model loaded");
+    statusBar()->addWidget(&statusLabel);
 
     fileDialog.setFileMode(QFileDialog::ExistingFile);
     fileDialog.setNameFilter("BREP and STEP files (*.brep *.step)");
@@ -44,20 +53,36 @@ void MainWindow::loadModel() {
     ui->occtWidget->loadModelFromFile(fileNames.first().toStdString());
 }
 
-void MainWindow::updateModelInfo(const QList<int> shellsFaceCounts) {
-    QString faces = "[";
-    for (int i = 0; i < shellsFaceCounts.size(); i++) {
-        faces += QString::number(shellsFaceCounts[i]);
-        if (i < shellsFaceCounts.size() - 1)
-            faces += ", ";
-    }
-    faces += "]";
-
-    modelInfoLabel.setText(
-        QString("Shells: %1, Faces: %2").arg(shellsFaceCounts.size()).arg(faces)
-    );
+void MainWindow::updateStatus(const QString &status) {
+    statusLabel.setText(status);
 }
 
 void MainWindow::showMessage(const QString &message) {
     statusBar()->showMessage(message, 5000);
+}
+
+void MainWindow::addModel(const ModelInfo &model) {
+    QObject::connect(
+        &model, &ModelInfo::visibleShapeChanged, ui->occtWidget,
+        &OcctWidget::displayModel
+    );
+
+    QObject::connect(
+        ui->treeWidget, &QTreeWidget::itemChanged, &model,
+        &ModelInfo::updateVisibility
+    );
+
+    ui->treeWidget->addTopLevelItem(model.treeWidgetItem());
+}
+
+void MainWindow::removeModel(const ModelInfo &model) {
+    QObject::disconnect(
+        &model, &ModelInfo::visibleShapeChanged, ui->occtWidget,
+        &OcctWidget::displayModel
+    );
+
+    QObject::disconnect(
+        ui->treeWidget, &QTreeWidget::itemChanged, &model,
+        &ModelInfo::updateVisibility
+    );
 }

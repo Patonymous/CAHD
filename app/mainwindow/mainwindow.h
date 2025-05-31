@@ -5,6 +5,8 @@
 #include <QLabel>
 #include <QMainWindow>
 
+#include "modelinfo.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
     class MainWindow;
@@ -20,12 +22,15 @@ public:
 
 public slots:
     void loadModel();
-    void updateModelInfo(const QList<int> shellsFaceCounts);
+    void updateStatus(const QString &status);
     void showMessage(const QString &message);
+
+    void addModel(const ModelInfo &modelinfo);
+    void removeModel(const ModelInfo &model);
 
 private:
     Ui::MainWindow *ui;
     QFileDialog     fileDialog;
-    QLabel          modelInfoLabel;
+    QLabel          statusLabel;
 };
 #endif // MAINWINDOW_H

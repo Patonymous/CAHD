@@ -14,6 +14,8 @@
 #include <AIS_ViewCube.hxx>
 #include <V3d_View.hxx>
 
+#include "modelinfo.h"
+
 class OcctWidget : public QOpenGLWidget,
                    QOpenGLFunctions,
                    public AIS_ViewController {
@@ -35,7 +37,7 @@ public:
     // Return OpenGL info.
     const QString &getGlInfo() const { return m_glInfo; }
 
-    // Minial widget size.
+    // Minimal widget size.
     virtual QSize minimumSizeHint() const override { return QSize(200, 200); }
 
     // Default widget size.
@@ -49,10 +51,14 @@ public:
 
 public slots:
     void loadModelFromFile(const std::string &path);
+    void displayModel(const TopoDS_Shape &occtSolid);
 
 signals:
-    void loadedModelInfo(const QList<int> shellsFaceCounts);
-    void modelLoadingMessage(const QString &message);
+    void modelLoaded(const ModelInfo &model);
+    void modelUnloaded(const ModelInfo &model);
+
+    void statusChanged(const QString &status);
+    void messageRaised(const QString &message);
 
 protected:
     void initializeGL() override;
@@ -88,6 +94,7 @@ private:
     Handle(AIS_Shape)              m_shape;
     // clang-format on
 
+    ModelInfo         *m_model;
     QString            m_glInfo;
     bool               m_isCoreProfile;
     QOpenGLDebugLogger m_logger;

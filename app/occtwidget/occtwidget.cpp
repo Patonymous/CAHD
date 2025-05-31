@@ -271,7 +271,8 @@ public:
 };
 
 OcctWidget::OcctWidget(QWidget *parent)
-    : QOpenGLWidget(parent), m_isCoreProfile(true), m_logger(this) {
+    : QOpenGLWidget(parent), m_model(nullptr), m_isCoreProfile(true),
+      m_logger(this) {
     QSurfaceFormat format;
     format.setVersion(4, 5);
     format.setProfile(
@@ -344,6 +345,9 @@ OcctWidget::~OcctWidget() {
     m_view.Nullify();
     m_viewer.Nullify();
 
+    if (m_model != nullptr)
+        delete m_model;
+
     // make active OpenGL context created by Qt
     makeCurrent();
     aDisp.Nullify();
@@ -381,7 +385,7 @@ void OcctWidget::loadModelFromFile(const std::string &path) {
         IFSelect_ReturnStatus status = reader.ReadFile(path.c_str());
 
         if (status != IFSelect_RetDone) {
-            emit modelLoadingMessage("ERROR: Unable to read STEP file");
+            emit messageRaised("ERROR: Unable to read STEP file");
             return;
         }
 
@@ -390,30 +394,33 @@ void OcctWidget::loadModelFromFile(const std::string &path) {
     } else if (ext == ".brep" || ext == ".BREP") {
         BRep_Builder builder;
         if (!BRepTools::Read(shape, path.c_str(), builder)) {
-            emit modelLoadingMessage("ERROR: Unable to read BREP file");
+            emit messageRaised("ERROR: Unable to read BREP file");
             return;
         }
     } else {
-        emit modelLoadingMessage(
+        emit messageRaised(
             "ERROR: Unsupported file format: " + QString::fromStdString(ext)
         );
         return;
     }
+    emit statusChanged("Loaded model " + QString::fromStdString(path));
 
-    QList<int> shellsFaceCounts;
-    for (TopExp_Explorer explorer(shape, TopAbs_SHELL); explorer.More();
-         explorer.Next()) {
-        shellsFaceCounts.append(0);
-        for (TopExp_Explorer exp2(explorer.Current(), TopAbs_FACE); exp2.More();
-             exp2.Next()) {
-            ++shellsFaceCounts.last();
-            auto face = TopoDS::Face(exp2.Current());
-        }
+    if (m_model != nullptr) {
+        emit modelUnloaded(*m_model);
+        delete m_model;
+        m_model = nullptr;
     }
-    emit loadedModelInfo(shellsFaceCounts);
 
+    auto name = std::filesystem::path(path).filename().string();
+    m_model   = new ModelInfo(this, QString::fromStdString(name), shape);
+    emit modelLoaded(*m_model);
+
+    displayModel(shape);
+}
+
+void OcctWidget::displayModel(const TopoDS_Shape &occt) {
     m_context->Remove(m_shape, false);
-    m_shape = new AIS_Shape(shape);
+    m_shape = new AIS_Shape(occt);
     m_shape->SetDisplayMode(AIS_Shaded);
     m_context->Display(m_shape, true);
     update();

@@ -26,6 +26,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 qt_add_executable(CAHD
     MACOSX_BUNDLE
     main.cpp
+    modelinfo.h
+    modelinfo.cpp
     mainwindow/mainwindow.cpp
     mainwindow/mainwindow.h
     mainwindow/mainwindow.ui
