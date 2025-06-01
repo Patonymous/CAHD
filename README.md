@@ -22,7 +22,7 @@ Requires OpenCASCADE 3rd party libs in addition to OpenCASCADE itself.
    - `THIRD_PARTY_DIR` should contain `jemalloc-...` subdir among others.
    - Set it in QtCreator->Build->CMake->CurrentConfiguration or append `-D THIRD_PARTY_DIR=<dir>` to `cmake` CLI arguments or use `cmake-gui`.
 1. Open [CMakeLists.txt](./app/CMakeLists.txt) as project in QtCreator and build via UI.
-   - You can also use `cmake [--fresh] -S app -B build <variables described above> && cmake --build build`, but building and/or running the executable might require additional environment setup, like adding all (Qt, OCCT and 3rd party) DLL dependencies to PATH.
+   - You can also use `cmake [--fresh] -S app -B build <variables described above> && cmake --build build`.
 1. Executable will be named `CAHD.exe` and reside somewhere within build directory.
    - Running this executable outside of QtCreator might require additional environment setup, like adding all (Qt, OCCT and 3rd party) DLL dependencies to PATH.
    - If QtCreator also fails to find all dependencies make sure that QtCreator->Projects->Run->Environment is set to "Build Environment".
