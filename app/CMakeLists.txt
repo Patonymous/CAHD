@@ -24,8 +24,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 qt_add_executable(CAHD
-    WIN32 MACOSX_BUNDLE
+    MACOSX_BUNDLE
     main.cpp
+    modelinfo.h
+    modelinfo.cpp
     mainwindow/mainwindow.cpp
     mainwindow/mainwindow.h
     mainwindow/mainwindow.ui
@@ -57,8 +59,9 @@ target_link_libraries(CAHD
         TKV3d
 )
 
-configure_file(
-   ../lib/openvr_api.dll openvr_api.dll COPYONLY
-)
+add_custom_command(TARGET CAHD POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/../lib/openvr_api.dll"
+        $<TARGET_FILE_DIR:CAHD>)  
 
 include(GNUInstallDirs)
