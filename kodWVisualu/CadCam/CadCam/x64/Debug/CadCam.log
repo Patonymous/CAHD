@@ -1,4 +1,3 @@
 ﻿  CadCam.cpp
-  LINK : nie znaleziono elementu C:\Users\Filip\Documents\GitHub\visualoweDziadostwo\CadCam\x64\Debug\CadCam.exe ani nie został on skompilowany podczas ostatniego konsolidowania przyrostowego; zostanie wykonana pełna konsolidacja
-     Trwa tworzenie biblioteki C:\Users\Filip\Documents\GitHub\visualoweDziadostwo\CadCam\x64\Debug\CadCam.lib i obiektu C:\Users\Filip\Documents\GitHub\visualoweDziadostwo\CadCam\x64\Debug\CadCam.exp
-  CadCam.vcxproj -> C:\Users\Filip\Documents\GitHub\visualoweDziadostwo\CadCam\x64\Debug\CadCam.exe
+C:\Users\Filip\Documents\GitHub\CAHD\kodWVisualu\CadCam\CadCam\CadCam.cpp(46,18): warning C4101: "builder": lokalna zmienna, do której nie istnieje odwołanie
+  CadCam.vcxproj -> C:\Users\Filip\Documents\GitHub\CAHD\kodWVisualu\CadCam\x64\Debug\CadCam.exe
