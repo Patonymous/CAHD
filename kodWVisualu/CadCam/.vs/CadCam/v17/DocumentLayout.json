@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Filip\\Documents\\GitHub\\CAHD\\kodWVisualu\\CadCam\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D65F7EDC-33AB-4AF4-B820-A9452910F689}|CadCam\\CadCam.vcxproj|C:\\Users\\Filip\\Documents\\GitHub\\CAHD\\kodWVisualu\\CadCam\\CadCam\\CadCam.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D65F7EDC-33AB-4AF4-B820-A9452910F689}|CadCam\\CadCam.vcxproj|solutionrelative:CadCam\\CadCam.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CadCam.cpp",
+              "DocumentMoniker": "C:\\Users\\Filip\\Documents\\GitHub\\CAHD\\kodWVisualu\\CadCam\\CadCam\\CadCam.cpp",
+              "RelativeDocumentMoniker": "CadCam\\CadCam.cpp",
+              "ToolTip": "C:\\Users\\Filip\\Documents\\GitHub\\CAHD\\kodWVisualu\\CadCam\\CadCam\\CadCam.cpp",
+              "RelativeToolTip": "CadCam\\CadCam.cpp",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAAAEAAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-06-04T17:55:21.629Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
