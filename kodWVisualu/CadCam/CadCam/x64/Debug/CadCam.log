@@ -1,0 +1,3 @@
+﻿  CadCam.cpp
+C:\Users\Filip\Documents\GitHub\CAHD\kodWVisualu\CadCam\CadCam\CadCam.cpp(46,18): warning C4101: "builder": lokalna zmienna, do której nie istnieje odwołanie
+  CadCam.vcxproj -> C:\Users\Filip\Documents\GitHub\CAHD\kodWVisualu\CadCam\x64\Debug\CadCam.exe
